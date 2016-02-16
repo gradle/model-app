@@ -1,0 +1,47 @@
+plugins {
+    id 'jvm-component'
+    id 'java-lang'
+}
+
+model {
+    mySources(JavaSourceSet) {
+        source.srcDir "src/main/java"
+    }
+    components {
+        myClasses(ClassesDirectorySpec) {
+            javaVersion = 'version_1_8'
+            sources = [$.mySources]
+            classesDir = "$buildDir/classes"
+        }
+    }
+    tasks {
+        compile(JavaCompile) {
+            def classes = $.components.myClasses
+            targetCompatibility = classes.javaVersion
+            sourceCompatibility = classes.javaVersion
+            destinationDir = classes.classesDir
+            classpath = files()
+            dependencyCacheDir = file("$buildDir/tmp/compile")
+            source classes.sources*.source
+        }
+        run(JavaExec) {
+            def compileTask = $.tasks.compile
+            dependsOn compileTask
+            classpath = files(compileTask.destinationDir)
+            main = 'Main'
+        }
+    }
+}
+
+@Managed
+interface ClassesDirectorySpec extends ComponentSpec {
+    @Unmanaged
+    Set<JavaSourceSet> getSources()
+    void setSources(Set<JavaSourceSet> sources)
+
+    File getClassesDir()
+    void setClassesDir(File classesDir)
+
+    JavaVersion getJavaVersion()
+    void setJavaVersion(JavaVersion javaVersion)
+}
