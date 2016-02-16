@@ -5,18 +5,18 @@ plugins {
 
 model {
     components {
-        mySources(JavaSourceSet) {
+        sources(JavaSourceSet) {
             source.srcDir "src/main/java"
         }
-        myClasses(ClassesDirectorySpec) {
+        classes(ClassesDirectorySpec) {
             javaVersion = 'version_1_8'
-            sources = [$.components.mySources]
+            sources = [$.components.sources]
             classesDir = "$buildDir/classes"
         }
     }
     tasks {
         compile(JavaCompile) {
-            def classes = $.components.myClasses
+            def classes = $.components.classes
             targetCompatibility = classes.javaVersion
             sourceCompatibility = classes.javaVersion
             destinationDir = classes.classesDir
