@@ -4,13 +4,13 @@ plugins {
 }
 
 model {
-    mySources(JavaSourceSet) {
-        source.srcDir "src/main/java"
-    }
     components {
+        mySources(JavaSourceSet) {
+            source.srcDir "src/main/java"
+        }
         myClasses(ClassesDirectorySpec) {
             javaVersion = 'version_1_8'
-            sources = [$.mySources]
+            sources = [$.components.mySources]
             classesDir = "$buildDir/classes"
         }
     }
