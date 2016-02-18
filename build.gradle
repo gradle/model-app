@@ -13,35 +13,9 @@ model {
             sources = [$.components.sources]
             classesDir = "$buildDir/classes"
         }
-    }
-    tasks {
-        compile(JavaCompile) {
-            def classes = $.components.classes
-            targetCompatibility = classes.javaVersion
-            sourceCompatibility = classes.javaVersion
-            destinationDir = classes.classesDir
-            classpath = files()
-            dependencyCacheDir = file("$buildDir/tmp/compile")
-            source classes.sources*.source
-        }
-        run(JavaExec) {
-            def compileTask = $.tasks.compile
-            dependsOn compileTask
-            classpath = files(compileTask.destinationDir)
-            main = 'Main'
+        app(JvmApplicationSpec) {
+            classpath = $.components.classes.classesDir
+            mainClass = 'Main'
         }
     }
-}
-
-@Managed
-interface ClassesDirectorySpec extends ComponentSpec {
-    @Unmanaged
-    Set<JavaSourceSet> getSources()
-    void setSources(Set<JavaSourceSet> sources)
-
-    File getClassesDir()
-    void setClassesDir(File classesDir)
-
-    JavaVersion getJavaVersion()
-    void setJavaVersion(JavaVersion javaVersion)
 }
